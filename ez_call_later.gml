@@ -15,11 +15,23 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
     callback = _callback;
     _is_running = false;
     
+    parameters = [];
+    Log(callback)
+    
+    /**
+     * Sets the parameters for the callback function.
+     * @param {array} _params - The parameters to be included in the callback function.
+     */
+    static set_parameters = function(_params){
+        parameters = _params;
+    }
+    
+    
     /**
      * Sets the callback function. This will immediately take effect for the next call
      * @param {function} _callback - The function to be executed when triggered.
      */
-    set_callback = function(_callback){
+    static set_callback = function(_callback){
         callback = _callback;
     }
     
@@ -27,7 +39,7 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
      * Sets the delay period before the callback executes.
      * @param {number} _time_period - Delay value.
      */
-    set_time_period = function(_time_period){
+    static set_time_period = function(_time_period){
         time_period = _time_period;
     }
     
@@ -35,7 +47,7 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
      * Sets the unit of measurement for the timer.
      * @param {number} _unit - Must be either time_source_units_frames or time_source_units_seconds.
      */
-    set_unit = function(_unit){
+    static set_unit = function(_unit){
         if(_unit != time_source_units_frames && _unit != time_source_units_seconds)
         {
             show_debug_message("[EZ Call Later] Invalid time source unit");
@@ -48,7 +60,7 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
      * Sets whether the callback should repeat.
      * @param {bool} _repeat - True if repeating, false if one-shot.
      */
-    set_repeat = function(_repeat){
+    static set_repeat = function(_repeat){
         loop = _repeat;
     }
     
@@ -56,13 +68,13 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
      * Checks if the timer is currently running.
      * @returns {bool} True if running, false otherwise.
      */
-    is_running = function(){return _is_running;}
+    static is_running = function(){return _is_running;}
     
     /**
      * Starts the timer with the given configuration.
      * Cancels any existing timer before starting a new one.
      */
-    start = function(){
+    static start = function(){
         if(time_period <= -1 || is_undefined(callback))
         {
             show_debug_message($"[EZ Call Later] Can't start call later timer. Missing data. Callback:{callback}, Period: {time_period}");
@@ -79,7 +91,7 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
     /**
      * Stops the current timer, if active.
      */
-    stop = function(){
+    static stop = function(){
         if(is_undefined(handler))
         {
             return;
@@ -91,7 +103,7 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
     /**
      * Runs callback once, then starts the timer.
      */
-    run_now_and_schedule = function()
+    static run_now_and_schedule = function()
     {
         _internal_callback();
         start();
@@ -100,7 +112,7 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
     /** Restarts call later
      * @param {real} _time_period Optional parameter to restart with a different timer
      */
-    restart = function(_time_period=-1)
+    static restart = function(_time_period=-1)
     {
         if(_time_period > -1)
         {
@@ -121,7 +133,7 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
         }
         try 
         {
-            callback();
+            callback(parameters);
             if(!loop)
             {
                 stop();
