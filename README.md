@@ -28,6 +28,7 @@ ez_call_later(callback, time_period, [unit=time_source_units_seconds], [loop=fal
 * `set_time_period(period)` - change delay
 * `set_unit(unit)` - change unit
 * `set_repeat(bool)` - change loop mode
+* `set_parameters(array)` - arguments to pass into the callback
 * `is_running()` - returns whether active
 
 ---
@@ -45,5 +46,36 @@ looped.start();
 
 // Restart with new delay
 looped.restart(120);
+```
+
+To pass arguments to your callback, use the set_parameters method.
+
+```gml
+// Call with arguments
+some_function = function(args) {
+    // Use the array elements here.
+    var message = args[0];
+    var destination = args[1];
+};
+
+var call = new ez_call_later(some_function, 2);
+call.set_parameters(["EZ Call requested.", "Nowhere."]);
+call.start();
+
+```
+
+
+Or it can be used in a single chained call.
+```gml
+// Build a quick ez_call_later with chained accessors.
+// You don’t need to return a handle for your ez_call_later unless you plan to modify its properties later.
+new ez_call_later(function(params) {
+    
+    var str = params[0] + " from Foxtrio";
+    show_debug_message(str);
+    
+}, 4, time_source_units_seconds, false)
+.set_parameters(["Hello"])
+.start();
 ```
 

@@ -15,8 +15,7 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
     callback = _callback;
     _is_running = false;
     
-    parameters = [];
-    Log(callback)
+    parameters = undefined;
     
     /**
      * Sets the parameters for the callback function.
@@ -24,6 +23,8 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
      */
     static set_parameters = function(_params){
         parameters = _params;
+        
+        return self;
     }
     
     
@@ -33,6 +34,8 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
      */
     static set_callback = function(_callback){
         callback = _callback;
+        
+        return self;
     }
     
     /**
@@ -41,6 +44,8 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
      */
     static set_time_period = function(_time_period){
         time_period = _time_period;
+        
+        return self;
     }
     
     /**
@@ -54,6 +59,8 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
             return;
         }
         unit = _unit;
+        
+        return self;
     }
     
     /**
@@ -62,6 +69,8 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
      */
     static set_repeat = function(_repeat){
         loop = _repeat;
+        
+        return self;
     }
     
     /**
@@ -86,6 +95,8 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
         }
         handler = call_later(time_period, unit, _internal_callback, loop);
         _is_running = true;
+        
+        return self;
     }
     
     /**
@@ -99,6 +110,8 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
         call_cancel(handler);
         handler = undefined;
         _is_running = false;
+        
+        return self;
     }
     /**
      * Runs callback once, then starts the timer.
@@ -107,6 +120,8 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
     {
         _internal_callback();
         start();
+        
+        return self;
     }
     
     /** Restarts call later
@@ -120,6 +135,8 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
         }
         stop();
         start();
+        
+        return self;
     }
     
     /**
@@ -133,7 +150,14 @@ function ez_call_later(_callback, _time_period, _unit=time_source_units_seconds,
         }
         try 
         {
-            callback(parameters);
+            if (parameters == undefined) 
+            {
+                callback();
+            } else 
+            {
+                callback(parameters);
+            }
+            
             if(!loop)
             {
                 stop();
